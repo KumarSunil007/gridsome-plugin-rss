@@ -5,9 +5,9 @@ const path = require('path')
 module.exports = function (api, options) {
   let articleData = []
   api.loadSource(store => {
-    let { collection } = store.getCollection(options.contentTypeName)
-    if(collection)
-      this.articleData = [...collection.data]
+  const storedData = store.getCollection(options.contentTypeName);
+  if (storedData && storedData.collection)
+      this.articleData = [...collection.data];
   })
 
   api.afterBuild(({ config }) => {
