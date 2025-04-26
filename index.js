@@ -4,13 +4,24 @@ const path = require("path");
 
 module.exports = function (api, options) {
   let articleData = [];
+  let storeInstance = null;
   api.loadSource((store) => {
-    const storedData = store.getCollection(options.contentTypeName);
-    if (storedData && storedData.collection)
-      this.articleData = [...collection.data];
+    storeInstance = store;
+    // May be collection is not ready yet
+    // const storedData = store.getCollection(options.contentTypeName);
+    // if (storedData && storedData.collection)
+    //   this.articleData = [...storedData.collection.data];
   });
 
   api.afterBuild(({ config }) => {
+    if (storeInstance) {
+      const storedData = storeInstance.getCollection(options.contentTypeName);
+      if (storedData && storedData.collection) {
+        articleData = [...storedData.collection.data];
+        this.articleData = articleData;
+      }
+    }
+
     const feed = new RSS(options.feedOptions);
     const dateField = options.dateField || "date";
 
